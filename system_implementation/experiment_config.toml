@@ -46,6 +46,12 @@ search_mode = "fixtures"
 domain_agents_enabled = true
 lean_executable = ""
 
+[assurance]
+# QED_LEAF audit of the Lean checker before each MAS run with checker = "lean" (assurance/qed_leaf/).
+# "off": skip; "record": reuse the result for unchanged sources or re-run the audit, and record it
+# (qed_leaf.json, comparison column qed_leaf); "require": also refuse the run unless QED_LEAF passed.
+qed_leaf = "record"
+
 [react]
 max_steps = 20
 json_mode = true

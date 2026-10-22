@@ -34,7 +34,8 @@ def system_settings(name, path=None):
 
 
 def config_path(value, executable=False):
-    """Resolve project paths; preserve venv symlinks."""
+    """Resolve project paths; normalize `..` but preserve venv symlinks."""
     if not value or (executable and "/" not in value and "\\" not in value):
         return value or None
-    return str((ROOT / Path(value).expanduser()).absolute())
+    # abspath, not resolve(): `..` must vanish so the path equals sys.executable in the child.
+    return os.path.abspath(ROOT / Path(value).expanduser())
