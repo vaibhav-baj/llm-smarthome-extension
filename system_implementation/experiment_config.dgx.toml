@@ -97,7 +97,8 @@ path = "../benchmark/benchmark_data.json"
 [judge]
 # SimuHome judge prompts are about 28,000 tokens; gemma2 accepts at most 8,192, and Ollama's
 # OpenAI-compatible endpoint uses the server's default context (4,096), silently cutting the prompt.
-# Gemma 4 31B on its own server started with OLLAMA_CONTEXT_LENGTH=65536 and OLLAMA_NUM_PARALLEL=1.
+# Gemma 4 31B on its own server with OLLAMA_CONTEXT_LENGTH=49152 (65536 does not fit one V100; longest
+# judge prompt seen: 33,748 tokens) and OLLAMA_NUM_PARALLEL=1.
 model = "gemma4:31b"
 api_base = "http://127.0.0.1:11504/v1"
 temperature = 1.0
