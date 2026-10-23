@@ -8,6 +8,7 @@ max_tokens = 1024
 context_window = 32768
 request_timeout = 60.0
 episode_timeout = 300.0  # ReAct/SAGE/DS-IA.
+# think = false  # Ollama thinking models only (e.g. Gemma 4); omitted keeps the model's default.
 
 [mas_models]
 same_for_all = true
