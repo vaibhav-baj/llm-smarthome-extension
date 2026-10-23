@@ -95,11 +95,14 @@ tool_timeout = 120.0
 path = "../benchmark/benchmark_data.json"
 
 [judge]
-model = "gemma2:latest"
-api_base = "http://127.0.0.1:11503/v1"  # judge on GPU 3's Ollama.
+# SimuHome judge prompts are about 28,000 tokens; gemma2 accepts at most 8,192, and Ollama's
+# OpenAI-compatible endpoint uses the server's default context (4,096), silently cutting the prompt.
+# Gemma 4 31B on its own server started with OLLAMA_CONTEXT_LENGTH=65536 and OLLAMA_NUM_PARALLEL=1.
+model = "gemma4:31b"
+api_base = "http://127.0.0.1:11504/v1"
 temperature = 1.0
 seeds = [42, 43, 44]
-request_timeout = 120.0
+request_timeout = 600.0
 
 [[runs]]
 name = "minimal_sequential"
