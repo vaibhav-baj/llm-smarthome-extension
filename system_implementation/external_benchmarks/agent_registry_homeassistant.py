@@ -55,7 +55,8 @@ def build_home(session):
                 # The system's parameter format marks optional arguments with a default.
                 if name not in schema.get("required", []) and "default" not in definition:
                     parameters[name] = {"anyOf": [definition, {"type": "null"}], "default": None}
-            parameters = {"service_id": {"type": "string"}, **parameters}
+            # service_id only routes the call to this domain's service; it is not an HA argument.
+            parameters = {"service_id": {"type": "string", "enum": [domain], "default": domain}, **parameters}
             read_only = tool.annotations.read_only
             affected = all_keys if tool.integration in {"intent", "homeassistant"} else keys
             card["operations"][tool.name] = {"description": tool.description or tool.name,

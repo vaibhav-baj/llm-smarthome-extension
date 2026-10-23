@@ -533,6 +533,15 @@ def home_assistant_setup(home_assistant):
 UNITS = {"brightness_pct": "%", "color_temperature_k": "K", "volume_pct": "%",
          "target_temperature_c": "degC", "stopwatch_elapsed_seconds": "s"}
 
+def fill_target_default(state, action):
+    """An omitted target argument takes its declared default, as validate_action fills defaults later;
+    footprint, scheduling and the Lean checker need the target before that."""
+    definition = state["agent_registry"][action["task"]["agent_id"]]["operations"][action["skill_id"]]
+    target_key = "device_id" if "device_id" in definition["parameters"] else "service_id"
+    if target_key not in action["arguments"] and "default" in definition["parameters"].get(target_key, {}):
+        action["arguments"] = {**action["arguments"], target_key: deepcopy(definition["parameters"][target_key]["default"])}
+
+
 def action_footprint(state, action):
     """One registry-derived footprint reused by scheduling, dispatch, Lean and repair."""
     definition = state["agent_registry"][action["task"]["agent_id"]]["operations"][action["skill_id"]]
@@ -1400,6 +1409,7 @@ def collect_plans(state):
                 additions[action_id] = {**action, "task_id": action_id, "task": deepcopy(task),
                                         "agent_id": task["agent_id"], "depends_on": list(dict.fromkeys(deps + predecessor_actions)),
                                         "status": "pending"}
+                fill_target_default(state, additions[action_id])
                 reads, writes, target = action_footprint(state, additions[action_id])
                 if not isinstance(target[1], str):
                     raise ValueError("Konkrete device_id/service_id muss ein String sein.")
